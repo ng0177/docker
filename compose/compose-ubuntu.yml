@@ -3,3 +3,5 @@ services:
   ubuntu-service:
     image: ubuntu
     command: tail -F /dev/null
+    volumes:
+      - /home/th6mas/docker/compose-ubuntu:/ubuntu-volume
