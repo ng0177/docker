@@ -1,6 +1,12 @@
-docker run --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
-> --runtime nvidia -v ${PWD}/examples:/examples \
-> -it simnet:21.06 bash
+# compose-simnet.yml
+
+#docker run
+#--shm-size=1g
+#--ulimit memlock=-1
+#--ulimit stack=67108864 \
+#--runtime nvidia
+#-v ${PWD}/examples:/examples \
+#-it simnet:21.06 bash
 
 version: '2'
 
@@ -8,23 +14,20 @@ services:
 
   simnet-service:
 
-    image: "simnet:21.06"
+    shm_size: '1g'
 
-    command: tail -F /dev/null
-    
-    build: .
-
-    ports:
-      - "5000:5000"
+    ulimits:
+      memlock: '-1'
+      stack: '67108864'
 
     volumes:
-	- /home/th6mas/docker/compose-simnet
+      - /mnt/103bae77-3b0b-4bdd-8573-d2c5b8734ab5/MSI/SimNet/examples:/examples
+      - /home/th6mas/docker/compose-simnet:/volume-simnet
 
-    environment:
-	shm-size:1g 
-	ulimit memlock:-1
-	ulimit stack:67108864
-	runtime:nvidia
+    runtime: 'nvidia'
 
-   redis:
+    image: "simnet:21.06"
 
+    #command: tail -F /dev/null
+    
+    #docker exec -i -t "composename" bash
