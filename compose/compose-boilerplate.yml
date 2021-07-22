@@ -1,0 +1,32 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # #
+# Content: docker compose for portainer
+# Author: Jan Jambor
+# Author URI: https://xwr.ch
+# Date: 09.07.2021
+#
+# $ cat > docker-compose.yaml
+# $ docker-compose up -d
+# # # # # # # # # # # # # # # # # # # # # # # # # #
+version: "2"
+services:
+  # source: https://hub.docker.com/r/portainer/portainer-ce/tags?page=1&ordering=last_updated&name=linux-amd64
+  portainer:
+    container_name: portainer
+    hostname: portainer
+    image: portainer/portainer-ce:linux-amd64-2.6.0
+    restart: always
+    command: -H unix:///var/run/docker.sock
+    ports:
+9000:9000
+8000:8000
+    volumes:
+'/var/run/docker.sock:/var/run/docker.sock'
+'/share/Container/portainer/_data:/data'
+    networks:
+BebelsDockerLan
+# $ docker network create -d bridge --attachable BebelsDockerLan
+networks:
+  BebelsDockerLan:
+    external:
+      name: BebelsDockerLan
+
