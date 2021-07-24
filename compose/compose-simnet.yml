@@ -21,13 +21,13 @@ services:
       stack: '67108864'
 
     volumes:
-      - /mnt/103bae77-3b0b-4bdd-8573-d2c5b8734ab5/MSI/SimNet/examples:/examples
-      - /home/th6mas/docker/compose-simnet:/volume-simnet
+      - ${HOME}/BLOCK/SimNet/examples:/examples
+      - /home/th6mas/Docker/volume-simnet:/volume-simnet
 
     runtime: 'nvidia'
 
     image: "simnet:21.06"
 
-    #command: tail -F /dev/null
+    command: tail -F /dev/null
     
     #docker exec -i -t "composename" bash

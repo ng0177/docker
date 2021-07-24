@@ -11,8 +11,8 @@ services:
     image: ubuntu
 
     volumes:
-      - /home/th6mas/Docker/volume-ubuntu:/volume-ubuntu
+      - /home/th6mas/Docker/volume-test:/volume-test
       
-    command: tail -F /dev/null
+    #command: tail -F /dev/null
 
     #docker exec -i -t "composename" bash

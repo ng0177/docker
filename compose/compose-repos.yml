@@ -11,7 +11,7 @@ services:
     image: ubuntu
 
     volumes:
-      - /home/th6mas/Docker/volume-ubuntu:/volume-ubuntu
+      - /home/th6mas/docker/compose-ubuntu:/volume-ubuntu
       
     command: tail -F /dev/null
 
