@@ -1,0 +1,38 @@
+# compose-ubuntu.yml
+
+# docker run -it ubuntu bash
+
+#https://docs.linuxserver.io/images/docker-calibre-web
+
+#docker run -d \
+#  --name=calibre-web \
+#  -e PUID=1000 \
+#  -e PGID=1000 \
+#  -e TZ=Europe/London \
+#  -e DOCKER_MODS=linuxserver/calibre-web:calibre `#optional` \
+#  -e OAUTHLIB_RELAX_TOKEN_SCOPE=1 `#optional` \
+#  -p 8083:8083 \
+#  -v /path/to/data:/config \
+#  -v /path/to/calibre/library:/books \
+#  --restart unless-stopped \
+#  ghcr.io/linuxserver/calibre-web
+
+version: "2.1"
+services:
+  calibre-web:
+    image: ghcr.io/linuxserver/calibre-web
+    container_name: calibre-web
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - DOCKER_MODS=linuxserver/calibre-web:calibre #optional
+      - OAUTHLIB_RELAX_TOKEN_SCOPE=1 #optional
+    volumes:
+      - /path/to/data:/config
+      - /path/to/calibre/library:/books
+    ports:
+      - 8083:8083
+    restart: unless-stopped
+
+# docker exec -i -t "composename" bash

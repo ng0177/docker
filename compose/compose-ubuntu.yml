@@ -15,4 +15,4 @@ services:
       
     command: tail -F /dev/null
 
-    #docker exec -i -t "composename" bash
+# docker exec -i -t "composename" bash
