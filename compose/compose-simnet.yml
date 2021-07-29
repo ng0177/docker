@@ -21,9 +21,9 @@ services:
       stack: '67108864'
 
     volumes:
+      - /mnt/103bae77-3b0b-4bdd-8573-d2c5b8734ab5/BLOCK/SimNet/examples:/examples
       #- ${HOME}/BLOCK/SimNet/examples:/examples
-      - /mnt/06a53ec5-9ce1-4c1f-a284-f070b5bb858c/SimNet/examples:/examples
-      - ${HOME}/Docker/volume-simnet:/volume-simnet
+      - ${HOME}/Docker/volume-simnet:/home/volume-simnet
 
     runtime: 'nvidia'
 
