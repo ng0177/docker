@@ -7,7 +7,7 @@
 # $ cat > docker-compose.yaml
 # $ docker-compose up -d
 # # # # # # # # # # # # # # # # # # # # # # # # # #
-version: "2"
+version: "2.1"
 services:
   # source: https://hub.docker.com/r/portainer/portainer-ce/tags?page=1&ordering=last_updated&name=linux-amd64
   portainer:
