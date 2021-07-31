@@ -1,13 +1,5 @@
 # compose-simnet.yml
 
-#docker run \
-#--shm-size=1g \
-#--ulimit memlock=-1 \
-#--ulimit stack=67108864 \
-#--runtime nvidia \
-#-v ${PWD}/examples:/examples \
-#-it simnet:21.06 bash
-
 version: '2.1'
 
 services:
@@ -21,9 +13,9 @@ services:
       stack: '67108864'
 
     volumes:
-      - /mnt/103bae77-3b0b-4bdd-8573-d2c5b8734ab5/BLOCK/SimNet/examples:/examples
+      #- /mnt/103bae77-3b0b-4bdd-8573-d2c5b8734ab5/BLOCK/SimNet/examples:/examples
+      - ${BLOCK}/SimNet/examples:/examples
       #- $(readlink -f ${HOME}/BLOCK/)/SimNet/examples:/examples
-      #- ${BLOCK}/SimNet/examples:/examples
       - ${HOME}/Docker/volume-simnet:/home/volume-simnet
 
     runtime: 'nvidia'
@@ -32,4 +24,12 @@ services:
 
     command: tail -F /dev/null
     
-# docker exec -i -t "composename" bash
+#docker run \
+#--shm-size=1g \
+#--ulimit memlock=-1 \
+#--ulimit stack=67108864 \
+#--runtime nvidia \
+#-v ${PWD}/examples:/examples \
+#-it simnet:21.06 bash
+
+# docker exec -it "composename" bash

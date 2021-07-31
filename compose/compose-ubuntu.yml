@@ -1,7 +1,5 @@
 # compose-ubuntu.yml
 
-# docker run -it ubuntu bash
-
 version: '2.1'
 
 services:
@@ -11,8 +9,9 @@ services:
     image: ubuntu
 
     volumes:
-      - /home/th6mas/Docker/volume-ubuntu:/volume-ubuntu
+      - ${BLOCK}/test:/test
       
     command: tail -F /dev/null
 
-# docker exec -i -t "composename" bash
+# docker run -it ubuntu bash
+# docker exec -it "composename" bash
