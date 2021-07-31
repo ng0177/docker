@@ -31,4 +31,6 @@ services:
 #-v ${PWD}/examples:/examples \
 #-it simnet:21.06 bash
 
-# docker exec -it "composename" bash
+#docker load -i simnet_image_v21.06.tar.gz
+#docker run --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 --runtime nvidia -v ${PWD}/examples:/examples -it simnet:21.06 bash
+#docker exec -it "composename" bash
