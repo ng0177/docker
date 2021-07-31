@@ -9,7 +9,8 @@ services:
     image: ubuntu
 
     volumes:
-      - ${DISK}/BLOCK/test:/test
+    # env variables only w/ github, symlinks OK: Portainer
+      - /home/th6mas/Docker/volume-simnet:/home/volume-simnet
       
     command: tail -F /dev/null
 
