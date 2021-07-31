@@ -14,7 +14,7 @@ services:
 
     volumes:
       #- /mnt/103bae77-3b0b-4bdd-8573-d2c5b8734ab5/BLOCK/SimNet/examples:/examples
-      - ${BLOCK}/BLOCK/SimNet/examples:/examples
+      - ${DISK}/BLOCK/SimNet/examples:/examples
       - ${HOME}/Docker/volume-simnet:/home/volume-simnet
 
     runtime: 'nvidia'

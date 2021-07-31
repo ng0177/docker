@@ -9,7 +9,7 @@ services:
     image: ubuntu
 
     volumes:
-      - ${BLOCK}/BLOCK/test:/test
+      - ${DISK}/BLOCK/test:/test
       
     command: tail -F /dev/null
 
