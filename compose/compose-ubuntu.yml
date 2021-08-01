@@ -9,10 +9,10 @@ services:
     image: ubuntu
 
     volumes:
-    # env variables only w/ github, symlinks OK: Portainer
+    # env variables only w/ git repo, symlinks are OK: Portainer
       - /home/th6mas/Docker/volume-simnet:/home/volume-simnet
       
     command: tail -F /dev/null
 
 # docker run -it ubuntu bash
-# docker exec -it "composename" bash
+# docker exec -it <composename> bash
