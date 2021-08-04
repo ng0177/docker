@@ -1,0 +1,15 @@
+services:
+  test:
+    image: tensorflow/tensorflow:latest-gpu
+    command: python -c "import tensorflow as tf;print(tf.config.list_physical_devices('GPU'))"
+    devices:
+      - /dev/nvidia0:/dev/nvidia0
+      - /dev/nvidiactl:/dev/nvidiactl
+      - /dev/nvidia-modeset:/dev/nvidia-modeset
+      - /dev/nvidia-uvm:/dev/nvidia-uvm
+      - /dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - capabilities: [gpu]

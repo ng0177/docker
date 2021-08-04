@@ -1,0 +1,44 @@
+# compose-arch-simnet.yml
+
+version: '2.1'
+
+services:
+
+  simnet-service:
+
+    devices:
+      - /dev/nvidia0:/dev/nvidia0
+      - /dev/nvidiactl:/dev/nvidiactl
+      - /dev/nvidia-modeset:/dev/nvidia-modeset
+      - /dev/nvidia-uvm:/dev/nvidia-uvm
+      - /dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools
+      
+    shm_size: '1g'
+
+    ulimits:
+      memlock: '-1'
+      stack: '67108864'
+
+    volumes:
+    # env variables only w/ git repo, symlinks are OK: Portainer
+      - /home/th6mas/BLOCK/SimNet/examples:/examples
+      - /home/th6mas/Docker/volume-simnet:/home/volume-simnet
+
+    runtime: 'nvidia'
+
+    image: "simnet:21.06"
+
+    command: tail -F /dev/null
+    
+#docker run \
+#--shm-size=1g \
+#--ulimit memlock=-1 \
+#--ulimit stack=67108864 \
+#--runtime nvidia \
+#-v ${PWD}/examples:/examples \
+#-it simnet:21.06 bash
+
+#docker load -i simnet_image_v21.06.tar.gz
+#nvidia docker toolkit!
+#docker run --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 --runtime nvidia -v ${PWD}/examples:/examples -it simnet:21.06 bash
+#docker exec -it <composename> bash
