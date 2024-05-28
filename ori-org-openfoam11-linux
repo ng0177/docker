@@ -1,0 +1,169 @@
+#!/bin/sh
+#------------------------------------------------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | Copyright (C) 2017-2023 OpenFOAM Foundation
+#    \\/     M anipulation  |
+#-------------------------------------------------------------------------------
+# License
+#     This program is free software: you can redistribute it and/or modify it
+#     under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This program is distributed in the hope that it will be useful, but
+#     WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+#     or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+#     for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Script
+#     openfoam11-linux
+#
+# Description
+#     Run script for an OpenFOAM 11 Docker image at:
+#     https://hub.docker.com/r/openfoam
+#
+#------------------------------------------------------------------------------
+Script=${0##*/}
+ver=11
+
+usage () {
+    exec 1>&2
+    while [ "$#" -ge 1 ]; do echo "$1"; shift; done
+    cat <<USAGE
+
+Usage: ${0##*/} [OPTIONS]
+options:
+  -d | -dir             host directory mounted (defaults to current directory)
+  -h | -help            help
+  -p | -paraview <vers> specify paraview version 56 | 510 (default)      
+  -u | -upgrade         install latest upgrades to the Docker image
+  -x | -xhost           use custom X authority and give container host network
+
+Launches the OpenFOAM-$ver Docker image.
+- Requires installation of docker-engine.
+- Runs a "containerized" bash shell environment where the user can run OpenFOAM
+  and, optionally, ParaView (see below).
+- The container mounts the user's file system so that case files are stored
+  permanently.  The container mounts the current directory by default, but the
+  user can also specify a particular directory using the "-d" option.
+- Mounting the user's HOME directory is disallowed.
+- The '-xhost' option is useful when accessing the host via 'ssh -X'.
+  This option should only be used when strictly necessary, as it relies on the
+  option '--net=host' when launching the container in Docker, which will
+  give to the container full access to the Docker host network stack and
+  potentially the host's system services that rely on network communication,
+  making it potentially insecure.
+
+Example:
+To store data in $HOME/OpenFOAM/$USER-$ver, the user can launch
+$Script either by:
+    cd $HOME/OpenFOAM/$USER-$ver && $Script
+or
+    $Script -d $HOME/OpenFOAM/$USER-$ver
+
+Further Information:
+http://openfoam.org/download/$ver-linux
+
+Note:
+The container user name appears as "openfoam" but it is just an alias.
+
+USAGE
+    exit 1
+}
+
+paraview_vers=510
+mount_dir=$(pwd)
+custom_xauth=""
+docker_options=""
+
+while [ "$#" -gt 0 ]
+do
+   case "$1" in
+   -d | -dir)
+       [ "$#" -ge 2 ] || usage "'$1' option requires an argument"
+       mount_dir=$2
+       shift 2
+       ;;
+   -h | -help)
+       usage
+       ;;
+   -p | -paraview)
+       [ "$#" -ge 2 ] || usage "'$1' option requires an argument"
+       paraview_vers=$2
+       case "$paraview_vers" in
+           56|510) ;;
+           *) usage "'$2' is not a valid ParaView version." \
+		    "Valid versions are 56 | 510."
+	      ;;
+       esac
+       shift 2
+       ;;
+   -u | -upgrade)
+       upgrade=yes
+       shift
+       ;;
+   -x | -xhost)
+       custom_xauth=yes
+       shift
+       ;;
+   *)
+       usage "Invalid option '$1'"
+       ;;
+    esac
+done
+
+docker_image="openfoam/openfoam$ver-paraview$paraview_vers"
+
+[ -d "$mount_dir" ] || usage "No directory exists: $mount_dir"
+mount_dir=$(cd "$mount_dir" && pwd -P)
+
+[ "$mount_dir" = "$(cd "$HOME" && pwd -P)" ] && \
+    usage "Mount directory cannot be the user's home directory" \
+          "Make a subdirectory and run from there, e.g." \
+          "    mkdir -p $HOME/OpenFOAM/$(whoami)-$ver" \
+          "    $Script -d $HOME/OpenFOAM/$(whoami)-$ver"
+
+if [ -n "$custom_xauth" ]
+then
+    xauth_path="$mount_dir/.docker.xauth.$$"
+    touch "$xauth_path"
+
+    # Generate a custom X-authority file that allows any hostname
+    xauth nlist "$DISPLAY" |  sed -e 's/^..../ffff/' | \
+        xauth -f "$xauth_path" nmerge -
+
+    docker_options="-e XAUTHORITY=$xauth_path
+                    -v $xauth_path:$xauth_path
+                    --net=host"
+else
+    docker_options="-e XAUTHORITY=/home/openfoam/.Xauthority \
+                    -v $XAUTHORITY:/home/openfoam/.Xauthority"
+fi
+
+user_id=$(id -u 2> /dev/null)
+[ -n "$user_id" ] || usage "Cannot determine current user ID"
+group_id=$(id -g)
+
+home_dir='/home/openfoam'
+
+echo "Launching $0"
+echo "User: \"$(id -un)\" (ID $user_id, group ID $group_id)"
+
+[ "$upgrade" ] && docker pull "$docker_image"
+
+# shellcheck disable=SC2086
+docker run -it \
+    --rm \
+    -e DISPLAY="$DISPLAY" \
+    -u "$user_id":"$group_id" \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -v "$mount_dir":$home_dir \
+    $docker_options \
+    "$docker_image"
+
+[ -n "$custom_xauth" ] && [ -e "$xauth_path" ] && rm "$xauth_path"
