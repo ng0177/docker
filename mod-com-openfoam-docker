@@ -430,8 +430,8 @@ fi
 
 exec $runPrefix ${toolChain:?} run \
     --rm -t -i \
-    -v /home/th6mas/.bashrc:$home_dir/.bashrc \
-    -v /home/th6mas/.aliases:$home_dir/.aliases \
+    -v /home/th6mas/.bashrc:$container_home/.bashrc \
+    -v /home/th6mas/.aliases:$container_home/.aliases \
     --user="$guest_uid:$guest_gid" \
     ${mount1Dir:+--volume="$mount1Dir:$container_home"} \
     ${mount2Dir:+--volume="$mount2Dir:/data"} \
